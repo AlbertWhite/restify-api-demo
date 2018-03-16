@@ -1,14 +1,22 @@
-var restify = require('restify');
+var restify = require('restify')
 
-function respond(req, res, next) {
-  res.send('hello ' + req.params.name);
-  next();
+function respondHttpGet(req, res, next) {
+  res.send('hello')
+  next()
 }
 
-var server = restify.createServer();
-server.get('/hello/:name', respond);
-server.head('/hello/:name', respond);
+function respondHttpPost(req, res, next) {
+  console.log(req.params)
+  res.send('hello')
+  next()
+}
+
+var server = restify.createServer()
+server.use(restify.plugins.bodyParser({ mapParams: true })) // in order to parse body, need to use plugin bodyParser
+
+server.get('/hello', respondHttpGet)
+server.post('/hello', respondHttpPost)
 
 server.listen(8080, function() {
-  console.log('%s listening at %s', server.name, server.url);
-});
+  console.log('%s listening at %s', server.name, server.url)
+})
